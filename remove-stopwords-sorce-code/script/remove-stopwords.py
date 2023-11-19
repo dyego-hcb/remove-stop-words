@@ -4,21 +4,27 @@ from nltk.corpus import stopwords
 nltk.download('stopwords')
 stop_words_pt = set(stopwords.words('portuguese'))
 
-
 def remove_stop_words(text):
     words = text.split()
-    filtered_text = ' '.join(
-        word for word in words if word.lower() not in stop_words_pt)
+    filtered_text = ' '.join(word for word in words if word.lower() not in stop_words_pt)
     return filtered_text
 
+def remove_stopwords_in_file(input_path, output_path):
+    try:
+        with open(input_path, 'r', encoding='utf-8') as input_file, open(output_path, 'w', encoding='utf-8') as output_file:
+            for linha in input_file:
+                texto_sem_stop_words = remove_stop_words(linha)
+                if texto_sem_stop_words.strip():
+                    output_file.write(texto_sem_stop_words + '\n')
 
-def process_file(input_file_path, output_file_path):
-    with open(input_file_path, 'r', encoding='utf-8') as f_in, open(output_file_path, 'w', encoding='utf-8') as f_out:
-        for line in f_in:
-            if remove_stop_words(line).strip(): 
-                f_out.write(remove_stop_words(line) + '\n')
+        print(f"Stop words removidas e texto salvo em {output_path}")
 
+    except FileNotFoundError:
+        print(f"Arquivo {input_path} não encontrado.")
+    except Exception as e:
+        print(f"Ocorreu um erro: {e}")
 
-input_file_path = './input/in.txt'
-output_file_path = './output/out.txt.txt'
-process_file(input_file_path, output_file_path)
+input_path = './input/in.txt'
+output_path = './output/out.txt'
+
+remove_stopwords_in_file(input_path, output_path)
